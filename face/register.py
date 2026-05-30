@@ -14,6 +14,7 @@ import cv2
 import numpy as np
 
 from .face_model import FaceModel
+from .orientation import detect_faces_with_rotation
 from .storage import Storage
 
 
@@ -82,7 +83,7 @@ def register(
     if img is None:
         raise DecodeError("cannot decode image")
 
-    faces = model.detect_and_embed(img)
+    detected_img, faces, rotation_degrees = detect_faces_with_rotation(model, img)
     if len(faces) == 0:
         raise NoFaceError("no face detected")
     if len(faces) > 1:
@@ -100,7 +101,7 @@ def register(
         if dup_sim is not None and dup_sim >= DUPLICATE_SIMILARITY:
             raise DuplicateOwnerError(dup_id, dup_sim)
 
-    face_photo_bytes = _crop_face_jpeg(img, face["bbox"])
+    face_photo_bytes = _crop_face_jpeg(detected_img, face["bbox"])
     meta = storage.save_owner(
         name,
         embedding,
@@ -113,6 +114,7 @@ def register(
         **meta,
         "face_bbox": face["bbox"],
         "det_score": face["det_score"],
+        "rotation_degrees": rotation_degrees,
         "gallery_size": len(storage),
     }
 

@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Optional, Union
 
 from .face_model import FaceModel
+from .orientation import detect_faces_with_rotation
 from .storage import Storage
 
 
@@ -42,9 +43,9 @@ def recognize(
     if img is None:
         return {"decision": "decode_error"}
 
-    faces = model.detect_and_embed(img)
+    _, faces, rotation_degrees = detect_faces_with_rotation(model, img)
     if len(faces) == 0:
-        return {"decision": "no_face"}
+        return {"decision": "no_face", "rotation_degrees": rotation_degrees}
 
     # If multiple faces, pick the one with the largest bbox area (closest to camera).
     face = max(faces, key=lambda f: (f["bbox"][2] - f["bbox"][0]) *
@@ -53,7 +54,8 @@ def recognize(
 
     if len(storage) == 0:
         return {"decision": "empty_gallery", "n_faces": n_faces,
-                "face_bbox": face["bbox"]}
+                "face_bbox": face["bbox"],
+                "rotation_degrees": rotation_degrees}
 
     owner_id, sim = storage.search_top1(face["embedding"])
     matched = sim is not None and sim >= threshold
@@ -67,6 +69,7 @@ def recognize(
         "threshold": threshold,
         "face_bbox": face["bbox"],
         "n_faces_detected": n_faces,
+        "rotation_degrees": rotation_degrees,
     }
 
 

@@ -21,6 +21,7 @@ face_recognition/
 │   ├── face_model.py     # InsightFace 模型封装
 │   ├── register.py       # 注册逻辑
 │   ├── recognize.py      # 识别逻辑
+│   ├── orientation.py    # 自动尝试 0/180/90/270 度检测
 │   ├── storage.py        # 本地人员库读写
 │   ├── manage.py         # 列表、修改、删除便捷函数
 │   └── capture.py        # 采集接口预留
@@ -98,6 +99,7 @@ print(result)
     "registered_at": "2026-05-30T18:44:08",
     "face_bbox": [...],
     "det_score": 0.91,
+    "rotation_degrees": 0,
     "gallery_size": 1,
 }
 ```
@@ -194,6 +196,14 @@ business_data/owners/000001/
 - 多张脸：选择最大人脸进行 1:N 匹配
 
 如果需要识别合照中的所有人，可以在现有 `recognize.py` 基础上扩展 `recognize_all()`。
+
+注册和识别都会自动尝试常见直角旋转：
+
+```text
+0° → 180° → 90° → 270°
+```
+
+如果原图方向检测不到人脸，会继续尝试其他方向。返回结果中的 `rotation_degrees` 表示最终使用的旋转角度，例如倒置照片通常会返回 `180`。
 
 ## 异常处理
 
