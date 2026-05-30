@@ -1,0 +1,38 @@
+# Python cache/build output
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+.conda/
+
+# Local/runtime data
+business_data/
+*.jpg
+*.jpeg
+*.png
+*.webp
+*.bmp
+*.npy
+
+# Local IDE/tool settings
+.vscode/
+.idea/
+.claude/
+face/.claude/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# some little test 
+test_*.py
