@@ -36,3 +36,5 @@ Thumbs.db
 
 # some little test 
 test_*.py
+
+scripts/
