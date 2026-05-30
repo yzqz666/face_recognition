@@ -37,4 +37,7 @@ Thumbs.db
 # some little test 
 test_*.py
 
+# local helper scripts
+scripts/
+
 scripts/
